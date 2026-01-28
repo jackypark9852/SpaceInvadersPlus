@@ -21,6 +21,7 @@ public class Alien : MonoBehaviour
 
     public void Kill()
     {
+        manager.ReportAlienDeath();
         GameManager.Instance.AddScore(points);
         gameObject.SetActive(false);
     }

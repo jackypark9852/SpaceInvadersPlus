@@ -5,6 +5,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [Header("UI")]
+    public GameObject gameOverPanel;
+    public GameObject gameOverText;
+    public GameObject winPanel;
+    public GameObject winText;
+    public GameObject restartButton;
     public int score = 0;
     public int lives = 3;
     public Spaceship player;
@@ -15,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     float respawnTimer;
     bool isRespawning;
+    bool gameEnded;
 
     void Awake()
     {
@@ -31,6 +38,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        HideAllPanels();
         UpdateUI();
     }
 
@@ -48,12 +56,14 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int points)
     {
+        if (gameEnded) return;
         score += points;
         UpdateUI();
     }
 
     public void LoseLife()
     {
+        if (gameEnded) return;
         lives--;
         UpdateUI();
         
@@ -65,6 +75,40 @@ public class GameManager : MonoBehaviour
         {
             StartRespawn();
         }
+    }
+
+    public void Win()
+    {
+        if (gameEnded) return;
+        gameEnded = true;
+        Time.timeScale = 0f;
+        if (winPanel != null)
+        {
+            winPanel.SetActive(true);
+            if (winText != null)
+                winText.SetActive(true);
+            restartButton.SetActive(true);
+        }
+    }
+
+    public void GameOver()
+    {
+        if (gameEnded) return;
+        gameEnded = true;
+        Time.timeScale = 0f;
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+            if (gameOverText != null)
+                gameOverText.SetActive(true);
+            restartButton.SetActive(true);
+        }
+    }
+
+    void HideAllPanels()
+    {
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (winPanel != null) winPanel.SetActive(false);
     }
 
     void UpdateUI()
@@ -89,17 +133,13 @@ public class GameManager : MonoBehaviour
         isRespawning = false;
     }
 
-    public void GameOver()
-    {
-        Debug.Log("GAME OVER");
-        Time.timeScale = 0f;
-    }
-
     public void ResetGame()
     {
         score = 0;
         lives = 3;
         Time.timeScale = 1f;
+        gameEnded = false;
+        HideAllPanels();
         UpdateUI();
     }
 }

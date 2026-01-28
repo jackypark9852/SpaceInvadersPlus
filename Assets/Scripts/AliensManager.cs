@@ -15,6 +15,10 @@ public class AliensManager : MonoBehaviour
     public float minZ = 0f, maxZ = 10f;
     public Vector3 originOffset = Vector3.zero;
 
+    [Header("Stats")]
+    [SerializeField] int totalAliens;
+    public int aliveAliens;
+
     public float stepSpeed = 4f;
     public float stepDown = 0.5f;
     public float leftLimit = -8f;
@@ -74,6 +78,15 @@ public class AliensManager : MonoBehaviour
         StepAliens();
     }
 
+    public void ReportAlienDeath()
+    {
+        aliveAliens--;
+        if (aliveAliens <= 0)
+        {
+            GameManager.Instance.Win();
+        }
+    }
+
     void RebuildAliens()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
@@ -86,6 +99,9 @@ public class AliensManager : MonoBehaviour
         }
 
         if (rows <= 0 || aliensPerRow <= 0) return;
+
+        totalAliens = rows * aliensPerRow;
+        aliveAliens = totalAliens;
 
         float width = maxX - minX;
         float depth = maxZ - minZ;
