@@ -18,6 +18,12 @@ public class AliensManager : MonoBehaviour
     public float moveInterval = 0.2f; // time between alien "steps"
     float timer;
     
+    [Header("Group Shooting")]
+    public GameObject projectilePrefab;    // optional override
+    public float minShootInterval = 0.8f;  // group firing rate
+    public float maxShootInterval = 2.5f;
+    float groupShootTimer;
+    
     int direction = 1; // 1 = right, -1 = left
 
     [HideInInspector] public bool dirty = true;
@@ -29,6 +35,12 @@ public class AliensManager : MonoBehaviour
         dirty = true;
 #endif
     }
+    
+    void Start()
+    {
+        ResetGroupShootTimer();
+    }
+
 
     void Update()
     {
@@ -42,7 +54,14 @@ public class AliensManager : MonoBehaviour
 
         if (!Application.isPlaying)
             return;
-
+        
+        groupShootTimer -= Time.deltaTime;
+        if (groupShootTimer <= 0f)
+        {
+            ShootRandomAlien();
+            ResetGroupShootTimer();
+        }
+        
         timer += Time.deltaTime;
         if (timer < moveInterval)
             return;
@@ -209,5 +228,29 @@ public class AliensManager : MonoBehaviour
         );
         
     }
+    
+    
+    void ResetGroupShootTimer()
+    {
+        groupShootTimer = Random.Range(minShootInterval, maxShootInterval);
+    }
 
+    void ShootRandomAlien()
+    {
+        // Collect living aliens
+        System.Collections.Generic.List<Alien> livingAliens = new();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            var alienComp = transform.GetChild(i).GetComponent<Alien>();
+            if (alienComp != null && transform.GetChild(i).gameObject.activeInHierarchy)
+                livingAliens.Add(alienComp);
+        }
+
+        if (livingAliens.Count > 0)
+        {
+            // Pick & shoot random one
+            int randIdx = Random.Range(0, livingAliens.Count);
+            livingAliens[randIdx].Shoot();
+        }
+    }
 }
