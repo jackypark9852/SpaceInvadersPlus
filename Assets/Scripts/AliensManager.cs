@@ -5,9 +5,9 @@ using System.Collections.Generic;
 public class AliensManager : MonoBehaviour
 {
     [Header("Alien Prefabs")]
-    public GameObject alien1Prefab; // First row
-    public GameObject alien2Prefab; // Rows 2-3
-    public GameObject alien3Prefab; // Rows 4-5
+    public GameObject alien1Prefab;
+    public GameObject alien2Prefab;
+    public GameObject alien3Prefab;
 
     [Min(1)] public int rows = 5;
     [Min(1)] public int aliensPerRow = 11;
@@ -31,10 +31,18 @@ public class AliensManager : MonoBehaviour
     float timer;
 
     [Header("Group Shooting")]
-    public GameObject projectilePrefab;
     public float minShootInterval = 0.8f;
     public float maxShootInterval = 2.5f;
     float groupShootTimer;
+
+    [Header("UFO")]
+    public GameObject ufoPrefab;
+    [Min(1f)] public float minUfoDelay = 10f;
+    [Min(5f)] public float minUfoInterval = 20f;
+    [Min(30f)] public float maxUfoInterval = 60f;
+    float ufoSpawnTimer;
+    bool ufoEnabled = true;
+    GameObject currentUfo;
 
     int direction = 1;
 
@@ -44,6 +52,7 @@ public class AliensManager : MonoBehaviour
     {
         ResetMovementSpeed();
         ResetGroupShootTimer();
+        ufoSpawnTimer = minUfoDelay;
     }
 
     void Update()
@@ -66,12 +75,45 @@ public class AliensManager : MonoBehaviour
             ResetGroupShootTimer();
         }
 
+        ufoSpawnTimer -= Time.deltaTime;
+        if (ufoSpawnTimer <= 0f && ufoEnabled && currentUfo == null)
+        {
+            SpawnUFO();
+            ResetUFOSpawnTimer();
+        }
+        
         timer += Time.deltaTime;
         if (timer < currentMoveInterval)
             return;
 
         timer = 0f;
         StepAliens();
+    }
+
+    void ResetUFOSpawnTimer()
+    {
+        ufoSpawnTimer = Random.Range(minUfoInterval, maxUfoInterval);
+    }
+
+    void SpawnUFO()
+    {
+        if (ufoPrefab == null)
+            return;
+
+        float x = leftLimit - 50;
+        Vector3 spawnPos = new Vector3(x, 0.0f, -110.0f);
+
+        currentUfo = Instantiate(ufoPrefab, spawnPos, Quaternion.identity, transform);
+        var ufo = currentUfo.GetComponent<UFO>();
+        if (ufo != null)
+            ufo.SetManager(this);
+    }
+
+    public void UFODestroyed()
+    {
+        currentUfo = null;
+        ResetUFOSpawnTimer(); 
+        ufoEnabled = true;
     }
 
     void ResetMovementSpeed()
@@ -90,7 +132,6 @@ public class AliensManager : MonoBehaviour
         }
     }
 
-    // Rest of methods unchanged...
     void RebuildAliens()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)

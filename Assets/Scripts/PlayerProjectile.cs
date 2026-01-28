@@ -34,6 +34,11 @@ public class PlayerProjectile : MonoBehaviour
             {
                 alien.Kill();
             }
+            else
+            {
+                UFO  ufo = other.GetComponent<UFO>();
+                ufo.Kill();
+            }
             Destroy(gameObject);
         }
         
