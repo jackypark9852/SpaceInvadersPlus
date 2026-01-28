@@ -11,14 +11,20 @@ public class Spaceship : MonoBehaviour
 
     [Header("Shooting")]
     public GameObject projectilePrefab;
+    public Transform shootPoint;
+    public AudioClip shootSFX;
     public float fireInterval = 0.2f;
 
     [Header("Respawn")]
     public Vector3 respawnPos = new Vector3(0, 0, -5f);
     public float respawnDelay = 1.5f;
+    public AudioClip deathSFX;
     
     [Header("Camera")]
     public GameCamera gameCamera;
+
+    [Header("Audio Source")]
+    public AudioSource audioSource;
 
     TPSCamera tpsCam;
 
@@ -28,6 +34,9 @@ public class Spaceship : MonoBehaviour
 
     void Start()
     {
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+            
         if (gameCamera == null)
             gameCamera = FindObjectOfType<GameCamera>();
     
@@ -41,7 +50,6 @@ public class Spaceship : MonoBehaviour
 
     void Update()
     {
-        // Camera toggle
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             bool toTPS = !gameCamera.IsFirstPersonMode();
@@ -74,12 +82,24 @@ public class Spaceship : MonoBehaviour
     {
         if (projectilePrefab == null) return;
         
-        GameObject proj = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+        Vector3 spawnPos = shootPoint != null ? shootPoint.position : transform.position;
+        GameObject proj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
+        
+        PlaySFX(shootSFX);
     }
 
     public void Kill()
     {
+        PlaySFX(deathSFX);
         GameManager.Instance.LoseLife();
+    }
+
+    void PlaySFX(AudioClip clip)
+    {
+        if (clip != null && audioSource != null)
+        { 
+            audioSource.PlayOneShot(clip);
+        }
     }
 
     void OnDrawGizmos()

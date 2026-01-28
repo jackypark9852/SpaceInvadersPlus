@@ -110,9 +110,14 @@ MonoBehaviour:
   minX: -120
   maxX: 120
   projectilePrefab: {fileID: 3298743755598989599, guid: 0f4862cb57e964e40b6bdf568abf28f3, type: 3}
+  shootPoint: {fileID: 0}
+  shootSFX: {fileID: 8300000, guid: b64f1c91d89fc78488ee6a510c4b3141, type: 3}
   fireInterval: 0.4
   respawnPos: {x: 0, y: 0, z: 20}
   respawnDelay: 1.5
+  deathSFX: {fileID: 8300000, guid: 6820d4ccac6e0334ab1208f1d03b4f83, type: 3}
+  gameCamera: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!65 &5388298985514720666
 BoxCollider:
   m_ObjectHideFlags: 0
