@@ -3,6 +3,14 @@ using UnityEngine;
 public class Alien : MonoBehaviour
 {
     [Header("Shooting")] public GameObject projectilePrefab;
+    AliensManager manager;
+
+    [Header("Value")] public int points = 10;
+
+    void Start()
+    {
+        manager = GetComponentInParent<AliensManager>();
+    }
 
     public void Shoot()
     {
@@ -13,7 +21,7 @@ public class Alien : MonoBehaviour
 
     public void Kill()
     {
-        GameManager.Instance.AddScore(10);
+        GameManager.Instance.AddScore(points);
         gameObject.SetActive(false);
     }
 }

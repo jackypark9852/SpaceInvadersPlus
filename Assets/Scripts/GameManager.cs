@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -7,6 +8,8 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public int lives = 3;
     public Spaceship player;
+    public TMPro.TextMeshProUGUI scoreText;
+    public TMPro.TextMeshProUGUI livesText;
     public Vector3 respawnPos = new Vector3(0, 0, -5f);
     public float respawnDelay = 1.5f;
 
@@ -26,6 +29,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        UpdateUI();
+    }
+
     void Update()
     {
         if (isRespawning)
@@ -41,13 +49,13 @@ public class GameManager : MonoBehaviour
     public void AddScore(int points)
     {
         score += points;
-        Debug.Log($"Score: {score}");
+        UpdateUI();
     }
 
     public void LoseLife()
     {
         lives--;
-        Debug.Log($"Lives: {lives}");
+        UpdateUI();
         
         if (lives <= 0)
         {
@@ -57,6 +65,14 @@ public class GameManager : MonoBehaviour
         {
             StartRespawn();
         }
+    }
+
+    void UpdateUI()
+    {
+        if (scoreText != null)
+            scoreText.text = $"Score: {score}";
+        if (livesText != null)
+            livesText.text = $"Lives: {lives}";
     }
 
     void StartRespawn()
@@ -73,7 +89,7 @@ public class GameManager : MonoBehaviour
         isRespawning = false;
     }
 
-    void GameOver()
+    public void GameOver()
     {
         Debug.Log("GAME OVER");
         Time.timeScale = 0f;
@@ -84,5 +100,6 @@ public class GameManager : MonoBehaviour
         score = 0;
         lives = 3;
         Time.timeScale = 1f;
+        UpdateUI();
     }
 }

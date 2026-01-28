@@ -105,12 +105,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b8c378941e902e4a8571ad3f278b084, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spaceship
-  moveSpeed: 20
-  stepInterval: 0.2
+  moveSpeed: 30
+  stepInterval: 0.1
   minX: -120
   maxX: 120
   projectilePrefab: {fileID: 3298743755598989599, guid: 0f4862cb57e964e40b6bdf568abf28f3, type: 3}
-  fireInterval: 0.2
+  fireInterval: 0.4
   respawnPos: {x: 0, y: 0, z: 20}
   respawnDelay: 1.5
 --- !u!65 &5388298985514720666

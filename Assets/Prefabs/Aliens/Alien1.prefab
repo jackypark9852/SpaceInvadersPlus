@@ -107,6 +107,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Alien
   projectilePrefab: {fileID: 2710406443864302093, guid: ddedb81c248541449850acb934613da6, type: 3}
+  lossZ: 10
 --- !u!114 &4823836166361800763
 MonoBehaviour:
   m_ObjectHideFlags: 0

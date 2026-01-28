@@ -34,6 +34,17 @@ public class PlayerProjectile : MonoBehaviour
             {
                 alien.Kill();
             }
+            Destroy(gameObject);
+        }
+        
+        if (other.CompareTag("Barrier"))
+        {
+            Barrier barrier = other.GetComponent<Barrier>();
+            if (barrier != null)
+            {
+                barrier.Hit();
+            }
+            Destroy(gameObject);
         }
     }
 }

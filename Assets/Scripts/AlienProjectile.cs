@@ -36,5 +36,15 @@ public class AlienProjectile : MonoBehaviour
             }
             Destroy(gameObject);
         }
+
+        if (other.CompareTag("Barrier"))
+        {
+            Barrier barrier = other.GetComponent<Barrier>();
+            if (barrier != null)
+            {
+                barrier.Hit();
+            }
+            Destroy(gameObject);
+        }
     }
 }
