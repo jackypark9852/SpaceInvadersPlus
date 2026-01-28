@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4727566375097647297
+--- !u!1 &7294990545905576856
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5434447077570453916}
-  - component: {fileID: 7330735433032992183}
-  - component: {fileID: 5184692606763815127}
-  - component: {fileID: 2946180410895707776}
-  - component: {fileID: 4823836166361800763}
-  - component: {fileID: 2654684517382815525}
-  - component: {fileID: -6587056354369766113}
+  - component: {fileID: 8250232419852831479}
+  - component: {fileID: 1591879270068945074}
+  - component: {fileID: 1587694723526788404}
+  - component: {fileID: 429953009854758103}
+  - component: {fileID: 5388298985514720666}
+  - component: {fileID: -4452217642458378548}
   m_Layer: 0
-  m_Name: Alien1
-  m_TagString: Enemy
+  m_Name: Spaceship
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5434447077570453916
+--- !u!4 &8250232419852831479
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
+  m_GameObject: {fileID: 7294990545905576856}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50.16264, y: 0, z: -58.8}
+  m_LocalPosition: {x: 0, y: 0, z: 20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7330735433032992183
+--- !u!33 &1591879270068945074
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
-  m_Mesh: {fileID: -2432090755550338912, guid: 5fcf3ca1d8486dd409dd3c2177e9475f, type: 3}
---- !u!23 &5184692606763815127
+  m_GameObject: {fileID: 7294990545905576856}
+  m_Mesh: {fileID: -2432090755550338912, guid: da674728a6d4ab64894f8fb787013888, type: 3}
+--- !u!23 &1587694723526788404
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
+  m_GameObject: {fileID: 7294990545905576856}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -94,42 +93,33 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2946180410895707776
+--- !u!114 &429953009854758103
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
+  m_GameObject: {fileID: 7294990545905576856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 635075378a3d07d4f9d92ea35b209d0a, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b8c378941e902e4a8571ad3f278b084, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Alien
-  projectilePrefab: {fileID: 2710406443864302093, guid: ddedb81c248541449850acb934613da6, type: 3}
---- !u!114 &4823836166361800763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94fdd8b18c4fcf54ba0b270d8799f541, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MeshAnimation
-  frames:
-  - {fileID: -2432090755550338912, guid: 5fcf3ca1d8486dd409dd3c2177e9475f, type: 3}
-  - {fileID: -2432090755550338912, guid: a1eead3da6aace3448ed5031fee408b5, type: 3}
-  frameRate: 1
---- !u!65 &2654684517382815525
+  m_EditorClassIdentifier: Assembly-CSharp::Spaceship
+  moveSpeed: 20
+  stepInterval: 0.2
+  minX: -120
+  maxX: 120
+  projectilePrefab: {fileID: 3298743755598989599, guid: 0f4862cb57e964e40b6bdf568abf28f3, type: 3}
+  fireInterval: 0.2
+  respawnPos: {x: 0, y: 0, z: 20}
+  respawnDelay: 1.5
+--- !u!65 &5388298985514720666
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
+  m_GameObject: {fileID: 7294990545905576856}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -142,15 +132,15 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 11.135487, y: 1.0595013, z: 8.02224}
-  m_Center: {x: -0.4584217, y: 0.53367645, z: 0.9915581}
---- !u!54 &-6587056354369766113
+  m_Size: {x: 13.231985, y: 1.2223018, z: 8.168871}
+  m_Center: {x: -0.495471, y: 0.47126833, z: 2.9805765}
+--- !u!54 &-4452217642458378548
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4727566375097647297}
+  m_GameObject: {fileID: 7294990545905576856}
   serializedVersion: 5
   m_Mass: 1
   m_LinearDamping: 0

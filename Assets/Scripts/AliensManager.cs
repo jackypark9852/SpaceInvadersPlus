@@ -1,30 +1,35 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [ExecuteInEditMode]
 public class AliensManager : MonoBehaviour
 {
-    public GameObject alienPrefab;
+    [Header("Alien Prefabs")]
+    public GameObject alien1Prefab; // First row
+    public GameObject alien2Prefab; // Rows 2-3
+    public GameObject alien3Prefab; // Rows 4-5
+
     [Min(1)] public int rows = 5;
     [Min(1)] public int aliensPerRow = 11;
     public float minX = -5f, maxX = 5f;
     public float minZ = 0f, maxZ = 10f;
     public Vector3 originOffset = Vector3.zero;
-    
-    public float stepSpeed = 4f;      // units per second along X
-    public float stepDown = 0.5f;     // world units along Z
-    public float leftLimit = -8f;     // world X
-    public float rightLimit = 8f;     // world X
-    
-    public float moveInterval = 0.2f; // time between alien "steps"
+
+    public float stepSpeed = 4f;
+    public float stepDown = 0.5f;
+    public float leftLimit = -8f;
+    public float rightLimit = 8f;
+
+    public float moveInterval = 0.2f;
     float timer;
-    
+
     [Header("Group Shooting")]
-    public GameObject projectilePrefab;    // optional override
-    public float minShootInterval = 0.8f;  // group firing rate
+    public GameObject projectilePrefab;
+    public float minShootInterval = 0.8f;
     public float maxShootInterval = 2.5f;
     float groupShootTimer;
-    
-    int direction = 1; // 1 = right, -1 = left
+
+    int direction = 1;
 
     [HideInInspector] public bool dirty = true;
 
@@ -35,12 +40,11 @@ public class AliensManager : MonoBehaviour
         dirty = true;
 #endif
     }
-    
+
     void Start()
     {
         ResetGroupShootTimer();
     }
-
 
     void Update()
     {
@@ -54,14 +58,14 @@ public class AliensManager : MonoBehaviour
 
         if (!Application.isPlaying)
             return;
-        
+
         groupShootTimer -= Time.deltaTime;
         if (groupShootTimer <= 0f)
         {
             ShootRandomAlien();
             ResetGroupShootTimer();
         }
-        
+
         timer += Time.deltaTime;
         if (timer < moveInterval)
             return;
@@ -72,7 +76,6 @@ public class AliensManager : MonoBehaviour
 
     void RebuildAliens()
     {
-        // Clear existing children
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
 #if UNITY_EDITOR
@@ -82,7 +85,7 @@ public class AliensManager : MonoBehaviour
 #endif
         }
 
-        if (!alienPrefab || rows <= 0 || aliensPerRow <= 0) return;
+        if (rows <= 0 || aliensPerRow <= 0) return;
 
         float width = maxX - minX;
         float depth = maxZ - minZ;
@@ -91,26 +94,24 @@ public class AliensManager : MonoBehaviour
 
         for (int row = 0; row < rows; row++)
         {
+            GameObject prefab = GetPrefabForRow(row);
+            if (prefab == null) continue;
+
             for (int col = 0; col < aliensPerRow; col++)
             {
                 float x = minX + col * xStep;
                 float z = minZ + row * zStep;
-
-                // World‑space spawn position
                 var pos = originOffset + new Vector3(x, 0f, z);
 
 #if UNITY_EDITOR
-                var go = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(alienPrefab, transform);
+                var go = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(prefab, transform);
                 go.transform.position = pos;
 #else
-                Instantiate(alienPrefab, pos, Quaternion.identity, transform);
+                Instantiate(prefab, pos, Quaternion.identity, transform);
 #endif
             }
         }
 
-        // Optionally, align the manager to the center of the formation in world‑space
-        // and move children so their world positions are unchanged:
-        // (Useful if you want to move the block via the parent.)
         Vector3 oldRootPos = transform.position;
         Vector3 center = ComputeWorldCenter();
         transform.position = center;
@@ -120,6 +121,16 @@ public class AliensManager : MonoBehaviour
             var c = transform.GetChild(i);
             c.position += oldRootPos - center;
         }
+    }
+
+    GameObject GetPrefabForRow(int row)
+    {
+        return row switch
+        {
+            0 => alien1Prefab,
+            1 or 2 => alien2Prefab,
+            _ => alien3Prefab
+        };
     }
 
     Vector3 ComputeWorldCenter()
@@ -134,19 +145,18 @@ public class AliensManager : MonoBehaviour
         }
         return sum / transform.childCount;
     }
+
     void StepAliens()
     {
         if (HitsEdge())
         {
             Vector3 pos = transform.position;
-            pos.z -= stepDown;     // move down only
+            pos.z -= stepDown;
             transform.position = pos;
-
             direction *= -1;
             return;
         }
 
-        // Normal horizontal step
         Vector3 p = transform.position;
         p.x += direction * stepSpeed * moveInterval;
         transform.position = p;
@@ -165,7 +175,7 @@ public class AliensManager : MonoBehaviour
             var child = transform.GetChild(i);
             if (!child.gameObject.activeInHierarchy) continue;
 
-            float x = child.position.x; // world X
+            float x = child.position.x;
             if (x < minWorldX) minWorldX = x;
             if (x > maxWorldX) maxWorldX = x;
         }
@@ -177,59 +187,53 @@ public class AliensManager : MonoBehaviour
 
         return false;
     }
-    
+
     void OnDrawGizmos()
     {
-        // Draw aliens extents (current formation bounds)
         if (transform.childCount > 0)
         {
-            float minX = float.PositiveInfinity;
-            float maxX = float.NegativeInfinity;
-            float minZ = float.PositiveInfinity;
-            float maxZ = float.NegativeInfinity;
+            float minXg = float.PositiveInfinity;
+            float maxXg = float.NegativeInfinity;
+            float minZg = float.PositiveInfinity;
+            float maxZg = float.NegativeInfinity;
 
             for (int i = 0; i < transform.childCount; i++)
             {
                 var child = transform.GetChild(i);
                 if (!child.gameObject.activeInHierarchy) continue;
 
-                Vector3 p = child.position; // world space
-                if (p.x < minX) minX = p.x;
-                if (p.x > maxX) maxX = p.x;
-                if (p.z < minZ) minZ = p.z;
-                if (p.z > maxZ) maxZ = p.z;
+                Vector3 p = child.position;
+                if (p.x < minXg) minXg = p.x;
+                if (p.x > maxXg) maxXg = p.x;
+                if (p.z < minZg) minZg = p.z;
+                if (p.z > maxZg) maxZg = p.z;
             }
 
-            if (minX != float.PositiveInfinity)
+            if (minXg != float.PositiveInfinity)
             {
-                float width = maxX - minX;
-                float depth = maxZ - minZ;
-                Vector3 center = new Vector3(minX + width * 0.5f, transform.position.y, minZ + depth * 0.5f);
+                float width = maxXg - minXg;
+                float depth = maxZg - minZg;
+                Vector3 center = new Vector3(minXg + width * 0.5f, transform.position.y, minZg + depth * 0.5f);
                 Vector3 size = new Vector3(width, 0.0f, depth);
 
                 Gizmos.color = Color.cyan;
-                Gizmos.DrawWireCube(center, size); // aliens extents[web:82][web:86]
+                Gizmos.DrawWireCube(center, size);
             }
         }
 
-        // Draw movement limits in world space
         Gizmos.color = Color.yellow;
 
-        // Left limit line
         Gizmos.DrawLine(
             new Vector3(leftLimit, transform.position.y, -100f),
             new Vector3(leftLimit, transform.position.y, 100f)
         );
 
-        // Right limit line
         Gizmos.DrawLine(
             new Vector3(rightLimit, transform.position.y, -100f),
             new Vector3(rightLimit, transform.position.y, 100f)
         );
-        
     }
-    
-    
+
     void ResetGroupShootTimer()
     {
         groupShootTimer = Random.Range(minShootInterval, maxShootInterval);
@@ -237,8 +241,7 @@ public class AliensManager : MonoBehaviour
 
     void ShootRandomAlien()
     {
-        // Collect living aliens
-        System.Collections.Generic.List<Alien> livingAliens = new();
+        List<Alien> livingAliens = new();
         for (int i = 0; i < transform.childCount; i++)
         {
             var alienComp = transform.GetChild(i).GetComponent<Alien>();
@@ -248,7 +251,6 @@ public class AliensManager : MonoBehaviour
 
         if (livingAliens.Count > 0)
         {
-            // Pick & shoot random one
             int randIdx = Random.Range(0, livingAliens.Count);
             livingAliens[randIdx].Shoot();
         }

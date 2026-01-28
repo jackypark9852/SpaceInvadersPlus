@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class AlienProjectile : MonoBehaviour
+public class PlayerProjectile : MonoBehaviour
 {
-    public float speed = 10f; 
-    public float stepInterval = 0.1f; 
-    public float lifeTime = 5f;   
+    public float speed = 12f;
+    public float stepInterval = 0.1f;
+    public float lifeTime = 5f;
 
     float stepTimer;
 
@@ -20,21 +20,20 @@ public class AlienProjectile : MonoBehaviour
         if (stepTimer <= 0f)
         {
             stepTimer = stepInterval;
-            
             transform.Translate(Vector3.back * speed * stepInterval, Space.World);
         }
     }
     
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        Debug.Log("Trigger entered");
+        if (other.CompareTag("Enemy"))
         {
-            Spaceship player = other.GetComponent<Spaceship>();
-            if (player != null)
+            Alien alien = other.GetComponent<Alien>();
+            if (alien != null)
             {
-                player.Kill();
+                alien.Kill();
             }
-            Destroy(gameObject);
         }
     }
 }
