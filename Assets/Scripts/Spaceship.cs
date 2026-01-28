@@ -16,6 +16,11 @@ public class Spaceship : MonoBehaviour
     [Header("Respawn")]
     public Vector3 respawnPos = new Vector3(0, 0, -5f);
     public float respawnDelay = 1.5f;
+    
+    [Header("Camera")]
+    public GameCamera gameCamera;
+
+    TPSCamera tpsCam;
 
     float moveTimer;
     float fireTimer;
@@ -23,12 +28,26 @@ public class Spaceship : MonoBehaviour
 
     void Start()
     {
+        if (gameCamera == null)
+            gameCamera = FindObjectOfType<GameCamera>();
+    
+        tpsCam = FindObjectOfType<TPSCamera>();
+        if (tpsCam != null)
+            tpsCam.SetTarget(transform);
+        
         fireTimer = fireInterval;
         moveTimer = stepInterval;
     }
 
     void Update()
     {
+        // Camera toggle
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            bool toTPS = !gameCamera.IsFirstPersonMode();
+            gameCamera.SetThirdPersonMode(toTPS);
+        }
+
         horizInput = Input.GetAxis("Horizontal");
 
         moveTimer -= Time.deltaTime;

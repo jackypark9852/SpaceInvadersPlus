@@ -19,12 +19,15 @@ public class AliensManager : MonoBehaviour
     [SerializeField] int totalAliens;
     public int aliveAliens;
 
-    public float stepSpeed = 4f;
+    [Header("Movement")]
+    [Min(0.1f)] public float baseStepSpeed = 4f;
+    [Min(0.1f)] public float speedMultiplierPerAlien = 0.02f;
     public float stepDown = 0.5f;
     public float leftLimit = -8f;
     public float rightLimit = 8f;
 
-    public float moveInterval = 0.2f;
+    public float baseMoveInterval = 0.2f;
+    float currentMoveInterval;
     float timer;
 
     [Header("Group Shooting")]
@@ -37,16 +40,9 @@ public class AliensManager : MonoBehaviour
 
     [HideInInspector] public bool dirty = true;
 
-    void OnValidate()
-    {
-#if UNITY_EDITOR
-        if (Application.isPlaying) return;
-        dirty = true;
-#endif
-    }
-
     void Start()
     {
+        ResetMovementSpeed();
         ResetGroupShootTimer();
     }
 
@@ -71,22 +67,30 @@ public class AliensManager : MonoBehaviour
         }
 
         timer += Time.deltaTime;
-        if (timer < moveInterval)
+        if (timer < currentMoveInterval)
             return;
 
         timer = 0f;
         StepAliens();
     }
 
+    void ResetMovementSpeed()
+    {
+        float speedMult = 1f + (speedMultiplierPerAlien * (totalAliens - aliveAliens));
+        currentMoveInterval = baseMoveInterval / speedMult;
+    }
+
     public void ReportAlienDeath()
     {
         aliveAliens--;
+        ResetMovementSpeed();
         if (aliveAliens <= 0)
         {
             GameManager.Instance.Win();
         }
     }
 
+    // Rest of methods unchanged...
     void RebuildAliens()
     {
         for (int i = transform.childCount - 1; i >= 0; i--)
@@ -137,6 +141,8 @@ public class AliensManager : MonoBehaviour
             var c = transform.GetChild(i);
             c.position += oldRootPos - center;
         }
+
+        ResetMovementSpeed();
     }
 
     GameObject GetPrefabForRow(int row)
@@ -174,7 +180,8 @@ public class AliensManager : MonoBehaviour
         }
 
         Vector3 p = transform.position;
-        p.x += direction * stepSpeed * moveInterval;
+        float currentSpeed = baseStepSpeed * (1f + (speedMultiplierPerAlien * (totalAliens - aliveAliens)));
+        p.x += direction * currentSpeed * currentMoveInterval;
         transform.position = p;
     }
 
