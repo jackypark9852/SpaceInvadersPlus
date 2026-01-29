@@ -81,12 +81,7 @@ public class AliensManager : MonoBehaviour
             SpawnUFO();
             ResetUFOSpawnTimer();
         }
-        
-        timer += Time.deltaTime;
-        if (timer < currentMoveInterval)
-            return;
 
-        timer = 0f;
         StepAliens();
     }
 
@@ -222,7 +217,7 @@ public class AliensManager : MonoBehaviour
 
         Vector3 p = transform.position;
         float currentSpeed = baseStepSpeed * (1f + (speedMultiplierPerAlien * (totalAliens - aliveAliens)));
-        p.x += direction * currentSpeed * currentMoveInterval;
+        p.x += direction * currentSpeed * Time.deltaTime;
         transform.position = p;
     }
 
