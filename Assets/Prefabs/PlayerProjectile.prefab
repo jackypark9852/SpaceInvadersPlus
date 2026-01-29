@@ -105,8 +105,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f0e5fd3f29ce34ebca5b402ecf8067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerProjectile
-  speed: 50
-  stepInterval: 0.2
+  speedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.39167193
+      value: 104.46866
+      inSlope: 527.78284
+      outSlope: 527.78284
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.052777782
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxCurveTime: 1
   lifeTime: 5
 --- !u!65 &6228356723619244192
 BoxCollider:
