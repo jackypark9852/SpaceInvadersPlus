@@ -58,16 +58,10 @@ public class Spaceship : MonoBehaviour
 
         horizInput = Input.GetAxis("Horizontal");
 
-        moveTimer -= Time.deltaTime;
-        if (moveTimer <= 0f)
-        {
-            moveTimer = stepInterval;
-
-            Vector3 pos = transform.position;
-            pos.x += -horizInput * moveSpeed * stepInterval;
-            pos.x = Mathf.Clamp(pos.x, minX, maxX);
-            transform.position = pos;
-        }
+        Vector3 pos = transform.position;
+        pos.x += -horizInput * moveSpeed * Time.deltaTime;
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        transform.position = pos;
 
         if (Input.GetButton("Fire1") && fireTimer <= 0f)
         {
