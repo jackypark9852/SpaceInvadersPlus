@@ -20,6 +20,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Fragment3 Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 7621632584849978087, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
+      propertyPath: m_Size.z
+      value: 2.0018182
+      objectReference: {fileID: 0}
+    - target: {fileID: 7621632584849978087, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
+      propertyPath: m_Center.z
+      value: -0.011823893
+      objectReference: {fileID: 0}
+    - target: {fileID: 7665109708545627985, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
+      propertyPath: m_Size.z
+      value: 1.9930425
+      objectReference: {fileID: 0}
+    - target: {fileID: 7665109708545627985, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
+      propertyPath: m_Center.z
+      value: 1.0004122
+      objectReference: {fileID: 0}
     - target: {fileID: 8753091659792122572, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
       propertyPath: m_LocalPosition.x
       value: 11.75081

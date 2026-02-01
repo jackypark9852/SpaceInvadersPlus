@@ -68,6 +68,7 @@ public class Alien : MonoBehaviour
         if (fragmentPrefabs == null || fragmentPrefabs.Length == 0) return;
 
         Vector3 basePos = transform.position + fragmentSpawnOffset;
+        basePos.y = 0f; // force Y to zero
 
         foreach (var prefab in fragmentPrefabs)
         {
@@ -75,8 +76,9 @@ public class Alien : MonoBehaviour
 
             for (int i = 0; i < fragmentsPerPrefab; i++)
             {
-                // small random offset so they don't all overlap, optional
                 Vector3 randOffset = Random.insideUnitSphere * 0.2f;
+                randOffset.y = 0f; // keep random offset flat on XZ plane
+
                 Instantiate(prefab, basePos + randOffset, transform.rotation);
             }
         }

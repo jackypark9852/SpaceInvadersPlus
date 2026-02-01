@@ -112,10 +112,10 @@ MonoBehaviour:
   restoreStrength: 2
   restoreDamping: 1
   fragmentPrefabs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 4749854190428094423, guid: 8681ab6ae4101414fa7e1a08511828b4, type: 3}
+  - {fileID: 4661427004700589520, guid: 26f036917e531494f9c0a35a64971dab, type: 3}
+  - {fileID: 638412177337932674, guid: 098d9a807e363465a87a686bb0b09990, type: 3}
+  - {fileID: 1300571007810080215, guid: cbdf9e71bf4764778ba06142c1280707, type: 3}
   fragmentsPerPrefab: 1
   fragmentSpawnOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &4823836166361800763
