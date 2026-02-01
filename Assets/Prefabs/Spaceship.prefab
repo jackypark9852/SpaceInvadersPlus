@@ -114,7 +114,10 @@ MonoBehaviour:
   shootSFX: {fileID: 8300000, guid: b64f1c91d89fc78488ee6a510c4b3141, type: 3}
   fireInterval: 0.4
   suckKey: 304
-  suckRadius: 37.31
+  suckRadius: 30
+  suckOffset: {x: 0, y: 0, z: 26}
+  absorbRadius: 7
+  absorbOffset: {x: 0, y: 0, z: 4.3}
   suckForce: 30
   suckUpwardForce: 5
   fragmentLayer:

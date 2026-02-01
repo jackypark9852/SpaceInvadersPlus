@@ -18,6 +18,9 @@ public class Spaceship : MonoBehaviour
     [Header("Suck")]
     public KeyCode suckKey = KeyCode.LeftShift;
     public float suckRadius = 5f;
+    public Vector3 suckOffset = Vector3.zero;
+    public float absorbRadius = 0.5f;
+    public Vector3 absorbOffset = Vector3.zero;
     public float suckForce = 30f;
     public float suckUpwardForce = 5f;
     public LayerMask fragmentLayer;
@@ -104,9 +107,10 @@ public class Spaceship : MonoBehaviour
 
     void SuckFragments()
     {
-        Debug.Log("Sucking");
-        Vector3 center = transform.position;
-        Collider[] hits = Physics.OverlapSphere(center, suckRadius, fragmentLayer);
+        Vector3 suckCenter = transform.position + suckOffset;
+        Vector3 absorbCenter = transform.position + absorbOffset;
+
+        Collider[] hits = Physics.OverlapSphere(suckCenter, suckRadius, fragmentLayer);
 
         foreach (var hit in hits)
         {
@@ -115,15 +119,18 @@ public class Spaceship : MonoBehaviour
             Rigidbody rb = hit.attachedRigidbody;
             if (rb == null) continue;
 
-            Vector3 dir = (center - rb.position);
-            float dist = dir.magnitude;
-            if (dist < 0.1f)
+            // Where do we absorb to? (spaceship center + absorbOffset)
+            Vector3 toAbsorb = absorbCenter - rb.position;
+            float distToAbsorb = toAbsorb.magnitude;
+
+            if (distToAbsorb < absorbRadius)
             {
                 AbsorbFragment(hit.gameObject);
                 continue;
             }
 
-            dir /= dist;
+            // Always pull toward the ship (or absorb center), not the suckCenter
+            Vector3 dir = toAbsorb.normalized;
 
             Vector3 force = dir * suckForce;
             force += Vector3.up * suckUpwardForce;
@@ -136,7 +143,6 @@ public class Spaceship : MonoBehaviour
     {
         currentGauge = Mathf.Min(maxGauge, currentGauge + gaugePerFragment);
         Destroy(fragment);
-        // Optional: play absorb SFX/VFX here
     }
 
     public void Kill()
@@ -153,7 +159,7 @@ public class Spaceship : MonoBehaviour
         }
     }
 
-    void OnDrawGizmos()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
 
@@ -168,16 +174,20 @@ public class Spaceship : MonoBehaviour
         );
 
         Vector3 rectCenter = new Vector3((minX + maxX) * 0.5f,
-                                         transform.position.y,
-                                         transform.position.z);
+            transform.position.y,
+            transform.position.z);
         Vector3 rectSize = new Vector3(maxX - minX, 20f, 1f);
         Gizmos.DrawWireCube(rectCenter, rectSize);
-    }
 
-    void OnDrawGizmosSelected()
-    {
+        Vector3 center = transform.position + suckOffset;
+
+        Vector3 suckCenter = transform.position + suckOffset;
+        Vector3 absorbCenter = transform.position + absorbOffset;
+
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, suckRadius);
-    }
+        Gizmos.DrawWireSphere(suckCenter, suckRadius);
 
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(absorbCenter, absorbRadius);
+    }
 }
