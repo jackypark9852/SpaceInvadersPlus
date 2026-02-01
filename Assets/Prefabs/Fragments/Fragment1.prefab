@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 6873600739500730507}
   - component: {fileID: 7538764529972080864}
   - component: {fileID: 2167564108693886635}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Fragment1
-  m_TagString: Untagged
+  m_TagString: Fragment
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,8 +111,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0129814, y: 0.98701954, z: 1.0259609}
-  m_Center: {x: -0.4932623, y: 0.51273334, z: -0.49975252}
+  m_Size: {x: 1.0129814, y: 8.379745, z: 1.0259609}
+  m_Center: {x: -0.4932623, y: 0.49623156, z: -0.49975252}
 --- !u!54 &2167564108693886635
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -139,4 +139,4 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 84
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1

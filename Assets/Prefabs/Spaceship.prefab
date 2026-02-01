@@ -113,6 +113,16 @@ MonoBehaviour:
   shootPoint: {fileID: 0}
   shootSFX: {fileID: 8300000, guid: b64f1c91d89fc78488ee6a510c4b3141, type: 3}
   fireInterval: 0.4
+  suckKey: 304
+  suckRadius: 37.31
+  suckForce: 30
+  suckUpwardForce: 5
+  fragmentLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  maxGauge: 100
+  gaugePerFragment: 5
+  gaugeDecayPerSecond: 5
   respawnPos: {x: 0, y: 0, z: 20}
   respawnDelay: 1.5
   deathSFX: {fileID: 8300000, guid: 6820d4ccac6e0334ab1208f1d03b4f83, type: 3}

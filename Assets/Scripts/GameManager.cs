@@ -34,9 +34,9 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        
+
         // Downward gravity (Z positive)
-        Physics.gravity = new Vector3(0f, 0f, 9.81f);   
+        Physics.gravity = new Vector3(0f, 0f, 29.43f);
     }
 
     void Start()
@@ -69,7 +69,7 @@ public class GameManager : MonoBehaviour
         if (gameEnded) return;
         lives--;
         UpdateUI();
-        
+
         if (lives <= 0)
         {
             GameOver();
