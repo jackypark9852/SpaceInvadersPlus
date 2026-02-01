@@ -5,10 +5,15 @@ public class Alien : MonoBehaviour
     [Header("Shooting")] public GameObject projectilePrefab;
     [Header("Death")] public AudioClip deathSFX;
     [Header("Value")] public int points = 10;
-    
+
     [Header("Restore Initial Rotation")]
     public float restoreStrength = 2f;
     public float restoreDamping = 1f;
+
+    [Header("Death Fragments")]
+    public GameObject[] fragmentPrefabs;     // assign in Inspector
+    public int fragmentsPerPrefab = 1;       // how many of each to spawn
+    public Vector3 fragmentSpawnOffset;      // optional offset
 
     AliensManager manager;
     AudioSource audioSource;
@@ -21,7 +26,7 @@ public class Alien : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
-            
+
         rb = GetComponent<Rigidbody>();
         initialRotation = transform.rotation;
     }
@@ -29,14 +34,14 @@ public class Alien : MonoBehaviour
     void FixedUpdate()
     {
         if (rb == null) return;
-        
+
         Quaternion deltaRot = initialRotation * Quaternion.Inverse(transform.rotation);
         deltaRot.ToAngleAxis(out float angle, out Vector3 axis);
         if (angle > 180f) angle -= 360f;
-        
+
         Vector3 torque = axis * (angle * Mathf.Deg2Rad) * restoreStrength;
         torque -= rb.angularVelocity * restoreDamping;
-        
+
         rb.AddTorque(torque, ForceMode.VelocityChange);
     }
 
@@ -48,10 +53,33 @@ public class Alien : MonoBehaviour
 
     public void Kill()
     {
+        // spawn fragments at alien position
+        SpawnFragments();
+
         PlaySFX(deathSFX);
-        manager.ReportAlienDeath();
+        if (manager != null)
+            manager.ReportAlienDeath();
         GameManager.Instance.AddScore(points);
         gameObject.SetActive(false);
+    }
+
+    void SpawnFragments()
+    {
+        if (fragmentPrefabs == null || fragmentPrefabs.Length == 0) return;
+
+        Vector3 basePos = transform.position + fragmentSpawnOffset;
+
+        foreach (var prefab in fragmentPrefabs)
+        {
+            if (prefab == null) continue;
+
+            for (int i = 0; i < fragmentsPerPrefab; i++)
+            {
+                // small random offset so they don't all overlap, optional
+                Vector3 randOffset = Random.insideUnitSphere * 0.2f;
+                Instantiate(prefab, basePos + randOffset, transform.rotation);
+            }
+        }
     }
 
     void PlaySFX(AudioClip clip)
