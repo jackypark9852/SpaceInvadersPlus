@@ -76,7 +76,7 @@ public class Alien : MonoBehaviour
 
             for (int i = 0; i < fragmentsPerPrefab; i++)
             {
-                Vector3 randOffset = Random.insideUnitSphere * 0.2f;
+                Vector3 randOffset = Random.insideUnitSphere * 0.5f;
                 randOffset.y = 0f; // keep random offset flat on XZ plane
 
                 Instantiate(prefab, basePos + randOffset, transform.rotation);
