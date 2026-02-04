@@ -64,6 +64,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 2710406443864302093, guid: ddedb81c248541449850acb934613da6, type: 3}
   shootIntervalMin: 1
   shootIntervalMax: 3
+  bombPowerupPrefab: {fileID: 1668502314205463981, guid: cc16087cc7b134e55854da98d064ea3d, type: 3}
   points: 200
 --- !u!23 &6165437918452543235
 MeshRenderer:

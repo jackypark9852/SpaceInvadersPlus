@@ -6,20 +6,17 @@ public class BombProjectile : MonoBehaviour
     public float explosionRadius = 8f;
     public GameObject explosionPrefab;  // Assign explosion VFX prefab
     public LayerMask damageLayer;      // Enemies/fragments layer
-
     private Rigidbody rb;
-    private bool armed = false;
-    private Spaceship parentShip;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.linearVelocity = transform.forward * speed;
+        rb.linearVelocity = -transform.forward * speed;
     }
 
     void Update()
     {
-        if (armed && Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             Detonate();
         }
@@ -29,19 +26,28 @@ public class BombProjectile : MonoBehaviour
     {
         // Spawn explosion VFX
         if (explosionPrefab != null)
-            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            Instantiate(explosionPrefab, transform.position, Quaternion.Euler(-90f, 0f, 0f));
+
 
         // Damage nearby enemies/fragments
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius, damageLayer);
         foreach (var hit in hits)
         {
-            Rigidbody hitRb = hit.attachedRigidbody;
-            if (hitRb != null)
+            if (!hit.CompareTag("Enemy"))
             {
-                Vector3 forceDir = (hitRb.position - transform.position).normalized;
-                hitRb.AddExplosionForce(500f, transform.position, explosionRadius, 3f);
+                continue;
             }
-            // Optional: Call enemy.Kill() or fragment destroy
+
+            Alien alien = hit.GetComponent<Alien>();
+            if (alien != null)
+            {
+                alien.Kill();
+            }
+            else
+            {
+                UFO ufo = hit.GetComponent<UFO>();
+                ufo.Kill();
+            }
         }
 
         Destroy(gameObject);
@@ -58,5 +64,5 @@ public class BombProjectile : MonoBehaviour
     }
 
     // Auto-detonate if flies offscreen (safety)
-    void OnBecameInvisible() { if (armed) Detonate(); }
+    void OnBecameInvisible() { Detonate(); }
 }

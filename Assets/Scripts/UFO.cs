@@ -1,4 +1,6 @@
+using Unity.Mathematics;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class UFO : MonoBehaviour
 {
@@ -16,6 +18,9 @@ public class UFO : MonoBehaviour
     public GameObject projectilePrefab;
     public float shootIntervalMin = 1f;
     public float shootIntervalMax = 3f;
+
+    [Header("Powerup")]
+    public GameObject bombPowerupPrefab;
 
     [Header("Points")]
     public int points = 100;
@@ -116,6 +121,11 @@ public class UFO : MonoBehaviour
 
     public void Kill()
     {
+        // Spawn bomb powerup in a random offsetted position
+        Vector3 randOffset = Random.insideUnitSphere * 0.5f;
+        randOffset.y = 0f; // keep random offset flat on XZ plane
+        Instantiate(bombPowerupPrefab, transform.position + randOffset, quaternion.identity);
+
         GameManager.Instance.AddScore(points);
         Destroy(gameObject);
     }

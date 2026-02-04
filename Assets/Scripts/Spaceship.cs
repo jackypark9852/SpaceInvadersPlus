@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Serialization;
 
 public class Spaceship : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class Spaceship : MonoBehaviour
     public Vector3 absorbOffset = Vector3.zero;
     public float suckForce = 30f;
     public float suckUpwardForce = 5f;
-    public LayerMask fragmentLayer;
+    [FormerlySerializedAs("fragmentLayer")] public LayerMask pickupLayer;
 
     [Header("Power Gauge / Ammo")]
     public float maxGauge = 100f;
@@ -149,7 +150,7 @@ public class Spaceship : MonoBehaviour
         Vector3 suckCenter = transform.position + suckOffset;
         Vector3 absorbCenter = transform.position + absorbOffset;
 
-        Collider[] hits = Physics.OverlapSphere(suckCenter, suckRadius, fragmentLayer);
+        Collider[] hits = Physics.OverlapSphere(suckCenter, suckRadius, pickupLayer);
 
         foreach (var hit in hits)
         {
