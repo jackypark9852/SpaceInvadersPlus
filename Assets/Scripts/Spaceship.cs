@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class Spaceship : MonoBehaviour
@@ -14,6 +15,11 @@ public class Spaceship : MonoBehaviour
     public Transform shootPoint;
     public AudioClip shootSFX;
     public float fireInterval = 0.2f;
+    public float ammoPerShot = 5f;   // how much gauge each shot costs
+
+    [Header("Bomb Powerup")]
+    public GameObject bombPrefab;
+    public int bombCharges = 0;
 
     [Header("Suck")]
     public KeyCode suckKey = KeyCode.LeftShift;
@@ -25,12 +31,13 @@ public class Spaceship : MonoBehaviour
     public float suckUpwardForce = 5f;
     public LayerMask fragmentLayer;
 
-    [Header("Power Gauge")]
+    [Header("Power Gauge / Ammo")]
     public float maxGauge = 100f;
     public float gaugePerFragment = 5f;
-    public float gaugeDecayPerSecond = 5f;
+    public float currentGauge;
 
-    float currentGauge;
+    [Header("Ammo UI")]
+    public Slider ammoSlider;
 
     [Header("Respawn")]
     public Vector3 respawnPos = new Vector3(0, 0, -5f);
@@ -63,6 +70,15 @@ public class Spaceship : MonoBehaviour
 
         fireTimer = fireInterval;
         moveTimer = stepInterval;
+
+        // Init ammo (full) and slider
+        currentGauge = maxGauge;
+        if (ammoSlider != null)
+        {
+            ammoSlider.minValue = 0f;
+            ammoSlider.maxValue = maxGauge;
+            ammoSlider.value = currentGauge;
+        }
     }
 
     void Update()
@@ -80,7 +96,8 @@ public class Spaceship : MonoBehaviour
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
         transform.position = pos;
 
-        if (Input.GetButton("Fire1") && fireTimer <= 0f)
+        // Require ammo to shoot
+        if (Input.GetButton("Fire1") && fireTimer <= 0f && currentGauge >= ammoPerShot)
         {
             Shoot();
             fireTimer = fireInterval;
@@ -90,19 +107,41 @@ public class Spaceship : MonoBehaviour
 
         if (Input.GetKey(suckKey))
             SuckFragments();
-
-        if (currentGauge > 0f)
-            currentGauge = Mathf.Max(0f, currentGauge - gaugeDecayPerSecond * Time.deltaTime);
     }
 
     void Shoot()
     {
         if (projectilePrefab == null) return;
+        if (bombCharges > 0)
+        {
+            // Launch bomb instead of normal shot
+            LaunchBomb();
+            bombCharges--;
+            return;
+        }
+
+        // Consume ammo
+        currentGauge = Mathf.Max(0f, currentGauge - ammoPerShot);
+
+        // Update ammo slider
+        if (ammoSlider != null)
+        {
+            ammoSlider.value = currentGauge;
+        }
 
         Vector3 spawnPos = shootPoint != null ? shootPoint.position : transform.position;
         GameObject proj = Instantiate(projectilePrefab, spawnPos, Quaternion.identity);
 
         PlaySFX(shootSFX);
+    }
+
+    void LaunchBomb()
+    {
+        if (bombPrefab == null) return;
+
+        Vector3 spawnPos = shootPoint != null ? shootPoint.position : transform.position;
+        GameObject bomb = Instantiate(bombPrefab, spawnPos, Quaternion.LookRotation(transform.forward));
+        BombProjectile bombScript = bomb.GetComponent<BombProjectile>();
     }
 
     void SuckFragments()
@@ -114,7 +153,7 @@ public class Spaceship : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            if (!hit.CompareTag("Fragment")) continue;
+            if (!hit.CompareTag("Fragment") && !hit.CompareTag("Powerup")) continue;
 
             Rigidbody rb = hit.attachedRigidbody;
             if (rb == null) continue;
@@ -125,7 +164,15 @@ public class Spaceship : MonoBehaviour
 
             if (distToAbsorb < absorbRadius)
             {
-                AbsorbFragment(hit.gameObject);
+                if (hit.CompareTag("Fragment"))
+                {
+                    AbsorbFragment(hit.gameObject);
+                }
+                else if (hit.CompareTag("Powerup"))
+                {
+                    AbsorbPowerup(hit.gameObject);
+                }
+
                 continue;
             }
 
@@ -133,7 +180,7 @@ public class Spaceship : MonoBehaviour
             Vector3 dir = toAbsorb.normalized;
 
             Vector3 force = dir * suckForce;
-            force += Vector3.up * suckUpwardForce;
+            force += new Vector3(0f, 0f, -suckUpwardForce);
 
             rb.AddForce(force, ForceMode.Acceleration);
         }
@@ -142,7 +189,20 @@ public class Spaceship : MonoBehaviour
     void AbsorbFragment(GameObject fragment)
     {
         currentGauge = Mathf.Min(maxGauge, currentGauge + gaugePerFragment);
+
+        if (ammoSlider != null)
+        {
+            ammoSlider.value = currentGauge;
+        }
+
         Destroy(fragment);
+    }
+
+    void AbsorbPowerup(GameObject powerup)
+    {
+        bombCharges = Mathf.Min(bombCharges + 1, 1); // cap at 1 if “next shot” only
+
+        Destroy(powerup);
     }
 
     public void Kill()
