@@ -131,6 +131,7 @@ MonoBehaviour:
   speed: 50
   explosionRadius: 18
   explosionPrefab: {fileID: 7571081657232865460, guid: 76b942cab7d09463aa961134d6697e84, type: 3}
+  explosionSound: {fileID: 8300000, guid: 1600783e4f72748f7b4fd613b4e61626, type: 3}
   damageLayer:
     serializedVersion: 2
     m_Bits: 128
